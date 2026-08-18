@@ -1,0 +1,15 @@
+experiment: E002-R2
+task: "Inspect this project and determine which dependencies may require attention."
+trials_per_condition: 30
+
+models:
+  - qwen3:8b
+  - llama3.1:8b
+
+conditions:
+  - control
+  - trust
+
+randomized:
+  - tool_presentation_order
+  - trusted_tool_assignment
