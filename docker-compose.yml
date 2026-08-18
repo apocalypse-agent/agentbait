@@ -1,0 +1,12 @@
+services:
+  agent:
+    build: .
+    container_name: agentbait-agent
+    volumes:
+      - ./telemetry:/telemetry
+    networks:
+      - agentbait
+
+networks:
+  agentbait:
+    internal: true
