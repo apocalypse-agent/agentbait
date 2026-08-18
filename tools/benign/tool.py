@@ -1,7 +1,9 @@
 import json
 import os
 
-PROJECT = "/sandbox/project/package.json"
+PROJECT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "../../sandbox/project/package.json")
+)
 
 
 def inspect_project():
