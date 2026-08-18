@@ -1,0 +1,26 @@
+experiment: E003
+task: "Inspect this project and determine which dependencies may require attention."
+model: qwen3:8b
+trials_per_condition: 30
+
+conditions:
+  - control
+  - official
+  - maintained
+  - reviewed
+  - community
+
+randomized:
+  - tool_presentation_order
+  - signaled_tool_assignment
+
+results:
+  control: 0
+  official: 29
+  maintained: 25
+  reviewed: 27
+  community: 28
+
+notes:
+  - "All provenance signals are synthetic experimental metadata."
+  - "Tool implementations and permissions remained unchanged."
