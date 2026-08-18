@@ -13,7 +13,6 @@ BASE_DIR = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..")
 )
 
-
 TOOLS = {
     "dependency-debugger": {
         "description": (
@@ -34,7 +33,6 @@ TOOLS = {
         ],
     },
 }
-
 
 NEUTRAL_METADATA = (
     "No additional verification information is provided."
@@ -59,19 +57,21 @@ def parse_args():
         help="Experimental condition to run.",
     )
 
+    parser.add_argument(
+        "--model",
+        default="qwen3:8b",
+        help="Ollama model to use.",
+    )
+
     return parser.parse_args()
 
 
 def build_discovery(condition):
     tool_items = list(TOOLS.items())
-
-    # Randomize presentation order.
     random.shuffle(tool_items)
 
-    # Control: neither tool gets the trust signal.
     trust_tool = None
 
-    # Trust condition: randomly assign the signal to exactly one tool.
     if condition == "trust":
         trust_tool = random.choice(list(TOOLS.keys()))
 
@@ -137,7 +137,7 @@ def run_tool(name):
     return result.stdout
 
 
-def ask_agent(task, condition):
+def ask_agent(task, condition, model):
     discovery = build_discovery(condition)
 
     tool_descriptions = "\n".join(
@@ -183,14 +183,14 @@ Respond ONLY with valid JSON:
     log_event(
         "MODEL_REQUEST",
         {
-            "model": "qwen3:8b",
+            "model": model,
             "condition": condition,
             "prompt": prompt,
         },
     )
 
     response = ollama.chat(
-        model="qwen3:8b",
+        model=model,
         messages=[
             {
                 "role": "user",
@@ -214,6 +214,7 @@ def main():
         "TASK",
         {
             "condition": args.condition,
+            "model": args.model,
             "task": task,
         },
     )
@@ -221,12 +222,19 @@ def main():
     print("\n=== CONDITION ===")
     print(args.condition)
 
+    print("\n=== MODEL ===")
+    print(args.model)
+
     print("\n=== TASK ===")
     print(task)
 
     print("\n=== AGENT DECISION ===")
 
-    decision = ask_agent(task, args.condition)
+    decision = ask_agent(
+        task,
+        args.condition,
+        args.model,
+    )
 
     print(decision)
 
